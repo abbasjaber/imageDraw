@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image</title>
+</head>
+
+<body>
+    <input type="file" name="inputfile" id="inputfile">
+    <br>
+    <canvas id="canvas"></canvas>
+
+</body>
+
+
+<script>
+    var l_image_array = [];
+    var canvas = document.getElementById("canvas");
+    var ctx = canvas.getContext("2d");
+    var width = 560;
+    var height = 315;
+    canvas.width = width;
+    canvas.height = height;
+    document.getElementById('inputfile')
+        .addEventListener('change', function () {
+            var fr = new FileReader();
+            fr.onload = function () {
+                image_data = fr.result;
+                draw(image_data)
+            }
+            fr.readAsText(this.files[0]);
+        });
+
+
+    function draw(w) {
+  
+        var dataset = w.trim().split(/\s+/);
+        var imgd = ctx.getImageData(0, 0, width, height);
+        var mImgData = ctx.createImageData(width, height);
+        var srcIndex = 0,
+            dstIndex = 0,
+            curPixelNum = 0;
+        for (curPixelNum = 0; curPixelNum < width * height; curPixelNum++) {
+            mImgData.data[dstIndex] = dataset[srcIndex]; // r
+            mImgData.data[dstIndex + 1] = dataset[srcIndex + 1]; // g
+            mImgData.data[dstIndex + 2] = dataset[srcIndex + 2]; // b
+            mImgData.data[dstIndex + 3] = 255; // 255 = 0xFF - constant alpha, 100% opaque
+            srcIndex += 3;
+            dstIndex += 4;
+        }
+        ctx.putImageData(mImgData, 0, 0);
+
+
+    }
+</script>
+
+</html>
